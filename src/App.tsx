@@ -32,7 +32,7 @@ export const App: React.FC = () => {
     getTodos(USER_ID)
       .then(setTodos)
       .catch(() => setErrorMessage(Error.Load));
-  });
+  }, []);
 
   useEffect(() => {
     if (wasEdited) {
@@ -127,7 +127,12 @@ export const App: React.FC = () => {
       return;
     }
 
-    todosApi.updateTodo(todoId, { completed: !todoToToggle.completed })
+    todosApi.updateTodo(todoId, {
+      completed: !todoToToggle.completed,
+      id: 0,
+      userId: 0,
+      title: ''
+    })
       .catch(() => setErrorMessage(Error.Toggle))
       .finally(() => {
         setTogglingId(null);
@@ -141,7 +146,12 @@ export const App: React.FC = () => {
     const promiseArray = (allTodosAreCompleted
       ? completedTodos
       : activeTodos).map((todo: { id: number; completed: boolean; }) => {
-      return todosApi.updateTodo(todo.id, { completed: !todo.completed });
+      return todosApi.updateTodo(todo.id, {
+        completed: !todo.completed,
+        id: 0,
+        userId: 0,
+        title: ''
+      });
     });
 
     setAreSubmiting(true);
@@ -223,8 +233,7 @@ export const App: React.FC = () => {
               onToggle={onToggle}
               onUpdate={updateTodo}
               isSubmiting={isSubmiting}
-              areSubmiting={areSubmiting}
-            />
+              areSubmiting={areSubmiting} togglingId={null}            />
 
             {tempTodo && (
               <TodoItem
